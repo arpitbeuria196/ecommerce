@@ -78,10 +78,48 @@ export const signup = async (req, res) => {
 
 export const signin = async (req,res)=>
 {
-    res.send("signIn successfully");
+    try 
+    {
+        const {email,password} = req.body;
+        
+        const existUser = await User.findOne({email});
+        if(existUser && await User.comparePassword(password))
+        {
+            const {accessToken,refreshToken} = generateTokens(existUser._id);
+
+            await storeRefreshToken(existUser._id,refreshToken);
+            setCookies(res,accessToken,refreshToken);
+
+            res.json({
+                _id: existUser._id,
+                name: existUser.name,
+                email: existUser.email,
+                role:  existUser.role
+            });
+        }
+        
+    } catch (error) {
+        res.status(500).json({message:error.message});
+    }
 }
 
 export const signout = async (req,res)=>
 {
-    res.send("logout successfully");
+   try 
+   {
+    const refreshToken = req.cookies.refreshToken;
+    if(refreshToken)
+    {
+        const decoded = jwt.verify(refreshToken,process.env.JWT_SECRET);
+        console.log(decoded);
+        await redis.del(`refresh_token:${decoded.userId}`);
+    }
+
+    res.clearCookies("accessToken");
+    res.clearCookies("refreshToken");
+    res.json({message:"Loggedout successfully"});
+    
+   } catch (error) {
+        res.status(500).json({message:"Server Error"});
+   }
 }
