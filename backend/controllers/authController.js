@@ -2,12 +2,16 @@ import { redis } from "../redis/redis.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../model/userModel.js";
+import dotenv from "dotenv";
+dotenv.config();
+
+const secret = process.env.JWT_SECRET || "defaultSecret";
 
 const generateTokens = (userId) => {
-    const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ userId }, secret, {
         expiresIn: "15m",
     });
-    const refreshToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    const refreshToken = jwt.sign({ userId }, secret, {
         expiresIn: "7d",
     });
 
