@@ -4,7 +4,8 @@ import authRoutes from "./routes/authRoute.js"
 import connectDB from "./lib/db.js"
 import cookieParser from "cookie-parser";
 import productRoutes from "./routes/productRoutes.js"
-
+import cartRoutes from "./routes/cartRoute.js"
+import couponRoutes from "./routes/couponRoutes.js"
 
 
 dotenv.config();
@@ -16,7 +17,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-app.use("/auth",authRoutes)
+app.use("/api/auth",authRoutes);
+app.use("/api/products",productRoutes);
+app.use("api/cart",cartRoutes);
+app.use("api/coupons",couponRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 

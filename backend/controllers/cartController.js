@@ -1,3 +1,4 @@
+import Product from "../model/productModel"
 export const addToCart = async (req,res)=>
 {
      try {
@@ -74,6 +75,9 @@ export const updateQuantity = async (req,res)=>
                 await user.save();
                 return res.json(user.cartItems);
             }
+            existingProduct.quantity = quantity;
+            await user.save();
+            res.json(user.cartItems);
         }
         else
         {
@@ -84,6 +88,20 @@ export const updateQuantity = async (req,res)=>
         res.status(404).json({message: "Error while updating quantity",error: error.message});
     }
 }
+export const getCartProducts = async (req,res)=>
+{
+    try {
+        const products = await Product.find({_id:{$in:req.user.cartItems}});
+
+        const cartItems = products.map( product =>{
+            const item = req.user.cartItems.filter(cartItem => cartItem.id == product.id);
+            return {...product.toJSON(),quantity:item.quantity}
+        })
+    } catch (error) {
+     res.status(500).json({message:"Server Error while fetching Cart Products!!"});   
+    }
+}
+
 
 
  
