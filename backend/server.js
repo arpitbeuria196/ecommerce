@@ -5,7 +5,8 @@ import connectDB from "./lib/db.js"
 import cookieParser from "cookie-parser";
 import productRoutes from "./routes/productRoutes.js"
 import cartRoutes from "./routes/cartRoute.js"
-import couponRoutes from "./routes/couponRoutes.js"
+import couponRoutes from "./routes/couponRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js"
 
 
 dotenv.config();
@@ -19,9 +20,9 @@ app.use(cookieParser());
 
 app.use("/api/auth",authRoutes);
 app.use("/api/products",productRoutes);
-app.use("api/cart",cartRoutes);
-app.use("api/coupons",couponRoutes);
-
+app.use("/api/cart",cartRoutes);
+app.use("/api/coupons",couponRoutes);
+app.use("/api/payments",paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 
