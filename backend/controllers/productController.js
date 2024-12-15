@@ -1,5 +1,5 @@
 import { redis } from "../redis/redis.js";
-import Product from "../model/productModel";
+import Product from "../model/productModel.js";
 import cloudinary from "../lib/cloudinary.js";
 
 
