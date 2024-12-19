@@ -1,9 +1,35 @@
 import { ShoppingCart, UserPlus, LogIn, Lock, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import {useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { logOut } from  "../stores/userSlice";
+import axiosInstance from "../lib/axios";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const user = false; // Mock user authentication state
-  const isAdmin = false; // Mock admin state
+  const user = useSelector((state)=>state.user.user)
+  const isAdmin = user?.role === "admin";
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  //signOut API
+  const handleLogout = async ()=>
+  {
+    try {
+
+     await axiosInstance.post("/auth/signout",{
+      withCredentials:true
+     });
+      dispatch(logOut());
+      navigate("/")
+      
+    } catch (error) {
+      
+      toast.error("SignOut Failed While Calling API", error?.response?.data?.message || "Unexpected error occurred");
+    }
+  }
+
+
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-emerald-800">
@@ -50,7 +76,9 @@ const Navbar = () => {
 
           {/* User Authentication */}
           {user ? (
-            <button className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center gap-2 transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+            <button className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center gap-2 transition duration-300 ease-in-out shadow-md hover:shadow-lg"
+            onClick={handleLogout}
+            >
               <LogOut className="w-5 h-5" />
               <span>Logout</span>
             </button>
