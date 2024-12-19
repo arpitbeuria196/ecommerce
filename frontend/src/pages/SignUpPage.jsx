@@ -6,10 +6,12 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading,setUser,setError } from "../stores/userSlice";
 import axiosInstance from "../lib/axios";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
 
   const loading = useSelector((state) => state.user.loading);
+  const navigate = useNavigate("");
   const[formData,setFormData] = useState({
     name:"",
     email:"",
@@ -48,6 +50,7 @@ const SignUpPage = () => {
 
     try {
       const user = await signupUser(formData.name,formData.email,formData.password);
+	  navigate("/");
       dispatch(setUser(user));
       toast.success("Signup successful!");
     } catch (error) 

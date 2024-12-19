@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../lib/axios";
 import toast from "react-hot-toast";
 import { setUser,setLoading,setError } from "../stores/userSlice";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -14,6 +15,7 @@ const LoginPage = () => {
 
   const loading = useSelector((state) => state.user.loading);
   const dispatch = useDispatch();
+  const navigate = useNavigate("");
 
   const[email,setEmail] = useState("");
   const[password,setPassword] = useState("")
@@ -51,6 +53,7 @@ const LoginPage = () => {
     dispatch(setLoading(true));
     try {
      const user = await loginUser(email,password);
+     navigate("/");
      dispatch(setUser(user))
      toast.success("SignIn Successfully Done!!");
     } catch (error) {
