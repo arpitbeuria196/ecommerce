@@ -26,6 +26,8 @@ const LoginPage = () => {
       const response = await axiosInstance.post("/auth/signin",{
         email,
         password
+      },{
+        withCredentials:true
       });
       return response.data;
       

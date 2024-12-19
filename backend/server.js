@@ -8,7 +8,7 @@ import cartRoutes from "./routes/cartRoute.js"
 import couponRoutes from "./routes/couponRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import analyticsRoute from "./routes/analyticsRoute.js"
-
+import cors from "cors"
 
 dotenv.config();
 
@@ -17,7 +17,10 @@ const app = express();
 //Parse the body of the request
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
 
 app.use("/api/auth",authRoutes);
 app.use("/api/products",productRoutes);
