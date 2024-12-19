@@ -1,12 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import Navbar from "./components/Navbar";
+import store from "./stores/appStore";
+import { Provider } from "react-redux";
 
 function App() {
   return (
-    <Router>
+    <Provider store={store}>
+      <Router>
       <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
         {/* Background gradient */}
         <div className="absolute inset-0 overflow-hidden">
@@ -26,6 +29,8 @@ function App() {
         </div>
       </div>
     </Router>
+    </Provider>
+    
   );
 }
 

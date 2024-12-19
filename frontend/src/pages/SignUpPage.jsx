@@ -2,9 +2,14 @@ import { UserPlus,Mail,Lock,User,ArrowRight,Loader } from "lucide-react"
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading,setUser,setError } from "../stores/userSlice";
+import axiosInstance from "../lib/axios";
 
 const SignUpPage = () => {
-  const loading = false;
+
+  const loading = useSelector((state) => state.user.loading);
   const[formData,setFormData] = useState({
     name:"",
     email:"",
@@ -12,9 +17,49 @@ const SignUpPage = () => {
     confirmPassword:"",
   });
 
-  const handleSubmit = (e)=>
+  const dispatch = useDispatch();
+
+  //Signup API
+  const signupUser = async (name,email,password)=>
+  {
+      try {
+      const response =  await axiosInstance.post("/auth/signup",{
+          name,
+          email,
+          password
+        })
+        return response.data;
+        
+      } catch (error) {
+       toast.error("SignUp Failed While Calling API", error?.response?.data?.message || "Unexpected error occurred");
+      }
+  }
+
+  const handleSubmit =async (e)=>
   {
     e.preventDefault();
+    if(formData.password!=formData.confirmPassword)
+    {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    dispatch(setLoading(true));
+
+    try {
+      const user = await signupUser(formData.name,formData.email,formData.password);
+      dispatch(setUser(user));
+      toast.success("Signup successful!");
+    } catch (error) 
+    {
+      dispatch(setError(error.response?.data?.message || "Signup failed"));
+      toast.error(error.response?.data?.message || "Signup failed");
+      
+    }
+    finally{
+      dispatch(setLoading(false));
+    }
+
     console.log(formData);
   }
 
